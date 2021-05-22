@@ -1,7 +1,9 @@
+# import threading
 import multiprocessing 
 import time
 import numpy as np
 from types import SimpleNamespace
+from multiprocessing import Pool
 
 def setup_exp(p):
     mu = 0.65
@@ -123,21 +125,13 @@ def worker(inst):
     pos = make_sim()
 
 
-for iter in range(1,13,3):
+for iter in range(1,13):
 
     num_parallel = iter
     start_time = time.time()
-
-    w = []
-    for i in range(num_parallel):
-        wi = multiprocessing.Process(target=worker, args={"inst":i})
-        w.append(wi)
-
-    for i in range(num_parallel):
-        w[i].start()
-
-    for i in range(num_parallel):
-        w[i].join()
+    
+    p = Pool(num_parallel)
+    p.map(worker, range(num_parallel))
 
     end_time = time.time()
 
